@@ -1,0 +1,13 @@
+package com.lurencun.service.autoupdate;
+
+
+/**
+ * 自定义显示最新版本信息
+ * 
+ * @author ilovedeals
+ * 
+ */
+public interface CustomDisplay {
+	void showFoundLatestVersion(Version version);
+	void showIsLatestVersion();
+}
