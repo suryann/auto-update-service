@@ -10,7 +10,7 @@ public class MainActivity extends Activity {
 
 private ServiceConnectionHelper upgadeManager = new ServiceConnectionHelper();
 	
-	final static String url = "http://api.sytime.com:8088/app_release/latest?app_type=android-mobile";
+	final static String url = "http://api.ilovedeals.sg/app_release/latest?app_type=android-mobile";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
