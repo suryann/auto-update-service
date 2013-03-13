@@ -28,6 +28,8 @@ public class AppUpdateService{
 	private DownloadReceiver downloaderReceiver;
 	private NetworkStateReceiver networkReceiver;
 	
+	private boolean updateDirectly = false;
+	
 	private long downloadTaskId = -12306;
 	private static AutoUpgradeDelegate updateDelegate;
 	
@@ -38,6 +40,16 @@ public class AppUpdateService{
 		
 		@Override
 		public void checkLatestVersion(String url, ResponseParser parser) {
+			checkVersion(url, parser, false);
+		}
+		
+		@Override
+		public void checkAndUpdateDirectly(String url, ResponseParser parser) {
+			checkVersion(url, parser, true);
+		}
+		
+		void checkVersion(String url, ResponseParser parser, boolean isUpdateDirectly){
+			updateDirectly = isUpdateDirectly;
 			if(isNetworkActive()){
 				VerifyTask task = new VerifyTask(context,parser,this);
 				task.execute(url);
@@ -82,6 +94,14 @@ public class AppUpdateService{
 		@Override
 		public void onFoundLatestVersion(Version version) {
 			this.latestVersion = version;
+			
+			if(updateDirectly){
+				downloadAndInstall(latestVersion);
+				String versionTipFormat = context.getResources().getString(R.string.update_latest_version_title);
+				Toast.makeText(context, String.format(versionTipFormat, latestVersion.name), Toast.LENGTH_LONG).show();
+				return;
+			}
+			
 			if(customShowingDelegate != null){
 				customShowingDelegate.showFoundLatestVersion(latestVersion);
 			}else{
@@ -123,23 +143,16 @@ public class AppUpdateService{
 		}
 
 		@Override
-		public void downloadAndInstall() {
-			downloadAndInstall(latestVersion);
-		}
-
-		@Override
 		public void doUpdate(boolean laterOnWifi) {
 			if(!laterOnWifi){
-				downloadAndInstall();
+				downloadAndInstall(latestVersion);
 			}else{
 				new VersionPersistent(context).save(latestVersion);
 			}
 		}
 
 		@Override
-		public void doIgnore() {
-			// Nop
-		}
+		public void doIgnore() {}
 		
 	}
 	

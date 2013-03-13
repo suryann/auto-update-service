@@ -41,9 +41,9 @@ public interface AppUpdate {
 	void downloadAndInstall(Version targetVersion);
 
 	/**
-	 * 在调用checkLatestVersion取得服务器返回版本信息后，调用此方法将直接下载并安装该版本
+	 * 如果发现新版本，无须弹出提示，直接下载并安装。
 	 */
-	void downloadAndInstall();
+	void checkAndUpdateDirectly(String url, ResponseParser parser);
 
 	/**
 	 * 在Activity中调用此方法，用以注册Receiver

@@ -10,6 +10,8 @@ public class MainActivity extends Activity {
 
 	AppUpdate appUpdate;
 	
+	final static String UPDATE_URL = "http://api.ilovedeals.sg/app_release/latest?app_type=android-mobile";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -22,7 +24,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// 检查最新版本，并弹出窗口
-				appUpdate.checkLatestVersion("http://api.ilovedeals.sg/app_release/latest?app_type=android-mobile", 
+				appUpdate.checkLatestVersion(UPDATE_URL, 
 						new SimpleJSONParser());
 			}
 		});
@@ -31,8 +33,9 @@ public class MainActivity extends Activity {
 		download.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// 在执行检查操作后，用户取消下载，可以通过此方法，下载最新版本。
-				appUpdate.downloadAndInstall();
+				// 无须提示，直接升级
+				appUpdate.checkAndUpdateDirectly(UPDATE_URL, 
+						new SimpleJSONParser());
 			}
 		});
 	}
