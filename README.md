@@ -5,6 +5,20 @@ An Android Service, provide a easy way to update app automatically.
 
 Android App自动更新服务。
 
+## 说明
+	AppUpdate为Android App自动升级功能提供两个便捷的接口：
+
+	- 1: checkLatestVersion(String updateUrl,ResponseParser parser);
+		检测指定URL的版本信息，如果版本信息高于当前应用的版本号，则弹出版本信息窗口，提示用户升级。
+		弹出窗口可以通过setCustomDisplayer(Displayer d)设置自定义显示窗口。
+
+	- 2: checkAndInstallDirectly(String updateUrl,ResponseParser parser);
+		检测指定URL的版本信息，如果版本信息高于当前应用版本号，则直接下载并安装。
+
+## 响应解析 (ResponseParser)
+	ResponseParser解析接口。指定URL返回的响应数据，需要通过此接口解析成Version对象。
+	**所以，你需要实现此接口**
+
 ## 简单的使用例子
 
 ``` java
@@ -34,8 +48,9 @@ public class MainActivity extends Activity {
 		download.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// 在执行检查操作后，用户取消下载，可以通过此方法，下载最新版本。
-				appUpdate.downloadAndInstall();
+				// 检查最新版本，不弹出提示窗口，直接下载升级
+				appUpdate.checkAndInstallDirectly("http://api.ilovedeals.sg/app_release/latest?app_type=android-mobile", 
+						new SimpleJSONParser());
 			}
 		});
 	}
