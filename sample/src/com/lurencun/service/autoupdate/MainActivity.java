@@ -10,8 +10,6 @@ public class MainActivity extends Activity {
 
 	AppUpdate appUpdate;
 	
-	final static String url = "http://api.ilovedeals.sg/app_release/latest?app_type=android-mobile";
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
