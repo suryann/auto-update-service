@@ -39,6 +39,11 @@ public interface AppUpdate {
 	 * @param url
 	 */
 	void downloadAndInstall(Version targetVersion);
+	
+	/**
+	 * 下载当前已经取得的版本
+	 */
+	void downloadAndInstallCurrent();
 
 	/**
 	 * 如果发现新版本，无须弹出提示，直接下载并安装。

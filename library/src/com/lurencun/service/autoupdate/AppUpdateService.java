@@ -57,6 +57,11 @@ public class AppUpdateService{
 		}
 		
 		@Override
+		public void downloadAndInstallCurrent() {
+			downloadAndInstall(latestVersion);
+		}
+		
+		@Override
 		public void downloadAndInstall(Version latestVersion) {
 			if ( latestVersion == null || !isNetworkActive() ) return;
 			downloader = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
@@ -153,7 +158,7 @@ public class AppUpdateService{
 
 		@Override
 		public void doIgnore() {}
-		
+
 	}
 	
 	class DownloadReceiver extends BroadcastReceiver {
