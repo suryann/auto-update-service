@@ -8,5 +8,10 @@ package com.lurencun.service.autoupdate;
  * 
  */
 public interface ResponseParser {
+	/**
+	 * 将字符数据解析成Version对象
+	 * @param response
+	 * @return
+	 */
 	Version parser(String response);
 }

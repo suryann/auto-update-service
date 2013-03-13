@@ -50,7 +50,7 @@ public class VerifyTask extends AsyncTask<String, Integer, Version> {
         if(comparedWithCurrentPackage(latestVersion)){
 			callback.onFoundLatestVersion(latestVersion);
 		}else{
-			callback.onIsLatestVersion();
+			callback.onCurrentIsLatest();
 		}
     } 
 	

@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         
-        <service android:name="com.lurencun.service.autoupdate.AutoUpgradeService" />
+        
     </application>
 
 </manifest>

@@ -4,7 +4,6 @@ import java.io.File;
 
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +11,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.Binder;
 import android.os.Environment;
-import android.os.IBinder;
 import android.widget.Toast;
 
 import com.lurencun.service.autoupdate.internal.FoundVersionDialog;
@@ -24,20 +21,19 @@ import com.lurencun.service.autoupdate.internal.VerifyTask;
 import com.lurencun.service.autoupdate.internal.VersionDialogListener;
 import com.lurencun.service.autoupdate.internal.VersionPersistent;
 
-public class AutoUpgradeService extends Service {
+public class AppUpdateService{
 	
+	private Context context;
 	private DownloadManager downloader;
 	private DownloadReceiver downloaderReceiver;
 	private NetworkStateReceiver networkReceiver;
-	private Context context;
 	
 	private long downloadTaskId = -12306;
+	private static AutoUpgradeDelegate updateDelegate;
 	
-	private AutoUpgradeDelegate updateDelegate;
-	
-	class AutoUpgradeDelegate extends Binder implements AutoUpgrade, ResponseCallback, VersionDialogListener{
+	class AutoUpgradeDelegate implements AppUpdate, ResponseCallback, VersionDialogListener{
 
-		private CustomDisplay customShowingDelegate;
+		private Displayer customShowingDelegate;
 		private Version latestVersion;
 		
 		@Override
@@ -95,7 +91,7 @@ public class AutoUpgradeService extends Service {
 		}
 		
 		@Override
-		public void onIsLatestVersion() {
+		public void onCurrentIsLatest() {
 			if(customShowingDelegate != null){
 				customShowingDelegate.showIsLatestVersion();
 			}else{
@@ -104,20 +100,20 @@ public class AutoUpgradeService extends Service {
 		}
 
 		@Override
-		public void registerReceiver() {
+		public void callOnResume() {
 			context.registerReceiver(downloaderReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 			context.registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 			
 		}
 
 		@Override
-		public void unregisterReceiver() {
+		public void callOnPause() {
 			context.unregisterReceiver(downloaderReceiver);
 			context.unregisterReceiver(networkReceiver);
 		}
 
 		@Override
-		public void setCustomVersionShowing(CustomDisplay delegate) {
+		public void setCustomDisplayer(Displayer delegate) {
 			customShowingDelegate = delegate;
 		}
 
@@ -194,18 +190,24 @@ public class AutoUpgradeService extends Service {
 		}
 	}
 	
-	@Override
-	public IBinder onBind(Intent intent) {
+	private AppUpdate getAppUpdate(){
 		if(updateDelegate == null){
 			updateDelegate = new AutoUpgradeDelegate();
 		}
 		return updateDelegate;
 	}
-
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		context = getApplicationContext();
+	
+	public static AppUpdateService updateServiceInstance = null;
+	
+	public static AppUpdate getAppUpdate(Context context){
+		if(null == updateServiceInstance){
+			updateServiceInstance = new AppUpdateService(context);
+		}
+		return updateServiceInstance.getAppUpdate();
+	}
+	
+	private AppUpdateService(Context context){
+		this.context = context;
 		downloaderReceiver = new DownloadReceiver();
 		networkReceiver = new NetworkStateReceiver();
 	}

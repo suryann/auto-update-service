@@ -8,7 +8,7 @@ package com.lurencun.service.autoupdate;
  * @author ilovedeals
  * 
  */
-public interface AutoUpgrade {
+public interface AppUpdate {
 
 	/**
 	 * 取得checkLatestVersion调用后创建的Version信息
@@ -20,9 +20,9 @@ public interface AutoUpgrade {
 	/**
 	 * 设置自定义显示新版本信息接口
 	 * 
-	 * @param delegate
+	 * @param displayer
 	 */
-	void setCustomVersionShowing(CustomDisplay delegate);
+	void setCustomDisplayer(Displayer displayer);
 
 	/**
 	 * 从指定URL检查新版本，并指定响应数据解析器。
@@ -46,12 +46,12 @@ public interface AutoUpgrade {
 	void downloadAndInstall();
 
 	/**
-	 * 注册接收器
+	 * 在Activity中调用此方法，用以注册Receiver
 	 */
-	void registerReceiver();
+	void callOnResume();
 
 	/**
-	 * 反注册接收器
+	 * 在Activity中调用此方法，用以反注册Receiver
 	 */
-	void unregisterReceiver();
+	void callOnPause();
 }

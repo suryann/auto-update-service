@@ -7,7 +7,7 @@ package com.lurencun.service.autoupdate;
  * @author ilovedeals
  * 
  */
-public interface CustomDisplay {
+public interface Displayer {
 	void showFoundLatestVersion(Version version);
 	void showIsLatestVersion();
 }

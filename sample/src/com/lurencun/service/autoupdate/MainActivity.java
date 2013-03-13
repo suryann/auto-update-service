@@ -8,7 +8,7 @@ import com.lurencun.service.autoupdate.internal.SimpleJSONParser;
 
 public class MainActivity extends Activity {
 
-private ServiceConnectionHelper upgadeManager = new ServiceConnectionHelper();
+	AppUpdate appUpdate;
 	
 	final static String url = "http://api.ilovedeals.sg/app_release/latest?app_type=android-mobile";
 	
@@ -17,11 +17,15 @@ private ServiceConnectionHelper upgadeManager = new ServiceConnectionHelper();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		appUpdate = AppUpdateService.getAppUpdate(this);
+		
 		View check = findViewById(R.id.check);
 		check.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				upgadeManager.upgradeService.checkLatestVersion(url, new SimpleJSONParser());
+				// 检查最新版本，并弹出窗口
+				appUpdate.checkLatestVersion("http://api.ilovedeals.sg/app_release/latest?app_type=android-mobile", 
+						new SimpleJSONParser());
 			}
 		});
 		
@@ -29,7 +33,8 @@ private ServiceConnectionHelper upgadeManager = new ServiceConnectionHelper();
 		download.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				upgadeManager.upgradeService.downloadAndInstall();
+				// 在执行检查操作后，用户取消下载，可以通过此方法，下载最新版本。
+				appUpdate.downloadAndInstall();
 			}
 		});
 	}
@@ -37,19 +42,17 @@ private ServiceConnectionHelper upgadeManager = new ServiceConnectionHelper();
 	@Override
 	protected void onResume(){
 		super.onResume();
-		ServiceConnectionHelper.bindService(this, upgadeManager);
+		
+		// ******** 
+		appUpdate.callOnResume();
 	}
 	
 	@Override
 	protected void onPause(){
 		super.onPause();
-		ServiceConnectionHelper.unbindService(this,upgadeManager);
-	}
-	
-	@Override
-	protected void onStop(){
-		super.onStop();
-		ServiceConnectionHelper.stopService(this);
+		
+		// ******** 
+		appUpdate.callOnPause();
 	}
 
 }
