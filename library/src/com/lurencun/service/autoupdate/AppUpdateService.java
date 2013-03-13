@@ -30,6 +30,8 @@ public class AppUpdateService{
 	
 	private boolean updateDirectly = false;
 	
+	private boolean isRegistered = false;
+	
 	private long downloadTaskId = -12306;
 	private static AutoUpgradeDelegate updateDelegate;
 	
@@ -126,6 +128,8 @@ public class AppUpdateService{
 
 		@Override
 		public void callOnResume() {
+			if(isRegistered) return;
+			isRegistered = true;
 			context.registerReceiver(downloaderReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 			context.registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 			
@@ -133,6 +137,8 @@ public class AppUpdateService{
 
 		@Override
 		public void callOnPause() {
+			if(!isRegistered) return;
+			isRegistered = false;
 			context.unregisterReceiver(downloaderReceiver);
 			context.unregisterReceiver(networkReceiver);
 		}
